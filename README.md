@@ -1,5 +1,5 @@
 
-# 🦙 FastAPI llama Chat Stream
+# 🦙 FastAPI Llama Chat Stream
 
 A full-stack local AI chat app using **LLaMA 3 (2.1B)** , with a **FastAPI** backend and **React/Next.js** frontend — streaming responses just like ChatGPT.
 
