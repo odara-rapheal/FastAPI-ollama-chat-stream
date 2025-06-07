@@ -52,4 +52,10 @@ ollama run llama3:2.1b
 
 Ollama will run the model locally on http://localhost:11434
 
-### Backend Setup (FastAPI)
+---
+
+## 2. Backend Setup (FastAPI)
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt

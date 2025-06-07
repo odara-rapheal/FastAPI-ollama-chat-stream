@@ -1,17 +1,13 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 import requests
 
 app = FastAPI()
 
-# Allow frontend to connect
-""" I allowed all origin because  I'm testing locally,
-    allow, only the necessary  origin URLs.
-"""
 app.add_middleware(
-    
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],  # For production, use specific origin(s)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -20,19 +16,21 @@ app.add_middleware(
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "llama3:2.1b"
 
-@app.post("/api/prompt")
-async def prompt_model(request: Request):
-    data = await request.json()
-    user_prompt = data.get("prompt")
-
-    if not user_prompt:
-        return {"error": "Prompt is required"}
-
+def stream_ollama(prompt: str):
     payload = {
         "model": MODEL_NAME,
-        "prompt": user_prompt,
-        "stream": False
+        "prompt": prompt,
+        "stream": True
     }
+    with requests.post(OLLAMA_URL, json=payload, stream=True) as r:
+        for line in r.iter_lines():
+            if line:
+                yield line.decode("utf-8") + "\n"
 
-    response = requests.post(OLLAMA_URL, json=payload)
-    return response.json()
+@app.post("/api/stream")
+async def stream_prompt(request: Request):
+    data = await request.json()
+    user_prompt = data.get("prompt")
+    if not user_prompt:
+        return {"error": "Prompt is required"}
+    return StreamingResponse(stream_ollama(user_prompt), media_type="text/event-stream")
