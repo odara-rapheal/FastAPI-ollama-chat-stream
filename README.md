@@ -34,7 +34,7 @@ A full-stack local AI chat app using **LLaMA 3 (2.1B)** , with a **FastAPI** bac
 
 ```
 ollama-chat-stream/
-├── backend/
+├── FastAPI-ollama-chat-stream/
 │   ├── main.py
 │   └── requirements.txt
 ├── frontend/
