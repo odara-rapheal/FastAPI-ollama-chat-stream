@@ -5,9 +5,15 @@ import requests
 
 app = FastAPI()
 
+""" Allow frontend to connect
+
+    NB: For production use, allow only the necessary URLs (frontend)
+    to connect to this backend.
+
+"""
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For production, use specific origin(s)
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
